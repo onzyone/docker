@@ -28,6 +28,8 @@ RUN rm -rf /var/tmp/awscli-bundle
 # Install Puppet Enterprise
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
 
+WORKDIR /
+
 CMD ["/bin/bash"]
 
 

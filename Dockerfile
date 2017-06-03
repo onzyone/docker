@@ -7,7 +7,10 @@ MAINTAINER Keiran Sweet "Keiran@gmail.com"
 RUN yum -y update
 RUN yum -y install which git vim mlocate curl sudo unzip file python-devel
 RUN useradd -m -u 501 keiran
+RUN usermod -G wheel keiran
 RUN chown keiran:keiran /home/keiran/
+RUN echo '%wheel    ALL=(ALL)    NOPASSWD:ALL' > /etc/sudoers.d/wheel
+RUN chmod 0440 /etc/sudoers.d/wheel
 
 # Install RVM and a copy of Ruby 2.3
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
@@ -27,6 +30,7 @@ RUN rm -rf /var/tmp/awscli-bundle
 
 # Install Puppet Enterprise
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
+
 
 WORKDIR /
 

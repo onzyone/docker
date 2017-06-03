@@ -14,7 +14,7 @@ RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A170311380
 RUN curl -sSL https://get.rvm.io | bash -s stable
 RUN usermod -G rvm keiran
 RUN usermod -G rvm root
-RUN rvm install 2.3
+RUN su - root -c "rvm install 2.3"
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -22,6 +22,8 @@ WORKDIR /var/tmp/
 RUN unzip awscli-bundle.zip
 WORKDIR /var/tmp/awscli-bundle/
 RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+RUN rm -f /var/tmp/awscli-bundle.zip
+RUN rm -rf /var/tmp/awscli-bundle
 
 # Install Puppet Enterprise
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm

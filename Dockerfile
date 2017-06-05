@@ -32,6 +32,7 @@ RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1
 
 # Install JQ
 RUN curl https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o "/usr/local/bin/jq"
+RUN chmod 755 /usr/local/bin/jq
 
 
 WORKDIR /

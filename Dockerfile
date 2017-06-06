@@ -31,7 +31,10 @@ RUN rm -rf /var/tmp/awscli-bundle
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
 
 # Install JQ
-RUN curl https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o "/usr/local/bin/jq"
+RUN yum -y install wget bind-utils
+WORKDIR /usr/local/bin/
+RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 
+RUN mv jq-linux64 jq
 RUN chmod 755 /usr/local/bin/jq
 
 

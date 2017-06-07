@@ -1,6 +1,7 @@
 # 
 # Create a docker image suitable for day to day use when on client
 # sites rather than pollute the OSX Base OS on my laptop.
+# Yes this is pretty heavy for a container...
 #
 FROM centos:7
 MAINTAINER Keiran Sweet "Keiran@gmail.com"
@@ -36,8 +37,15 @@ RUN /usr/bin/pip3 install azure-cli
 RUN rm -f /bin/python
 RUN ln -s /bin/python3 /bin/python
 
-# Install Puppet Enterprise
+# Install Puppet Enterprise and the Gems for Azure.
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
+RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install azure --version='~>0.7.0' --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_compute --version='~>0.3.0' --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_storage --version='~>0.3.0' --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_resources --version='~>0.3.0' --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_network --version='~>0.3.0' --no-ri --no-rdoc
+RUN /opt/puppetlabs/puppet/bin/gem install hocon --version='~>1.1.2' --no-ri --no-rdoc
 
 # Install JQ
 WORKDIR /usr/local/bin/

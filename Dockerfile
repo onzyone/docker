@@ -5,7 +5,8 @@
 FROM centos:7
 MAINTAINER Keiran Sweet "Keiran@gmail.com"
 RUN yum -y update
-RUN yum -y install which git vim mlocate curl sudo unzip file python-devel
+RUN yum -y install epel-release
+RUN yum -y install which git vim mlocate curl sudo unzip file python-devel python-pip python34 python34-devel wget bind-utils
 RUN useradd -m -u 501 keiran
 RUN chown keiran:keiran /home/keiran/
 RUN echo '%wheel    ALL=(ALL)    NOPASSWD:ALL' > /etc/sudoers.d/wheel
@@ -27,11 +28,16 @@ RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -f /var/tmp/awscli-bundle.zip
 RUN rm -rf /var/tmp/awscli-bundle
 
+# Install the Azure CLI
+WORKDIR /var/tmp/
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN /usr/bin/python3 get-pip.py
+RUN /usr/bin/pip3 install azure-cli
+
 # Install Puppet Enterprise
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
 
 # Install JQ
-RUN yum -y install wget bind-utils
 WORKDIR /usr/local/bin/
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 
 RUN mv jq-linux64 jq

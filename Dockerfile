@@ -33,6 +33,8 @@ WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN /usr/bin/python3 get-pip.py
 RUN /usr/bin/pip3 install azure-cli
+RUN rm -f /bin/python
+RUN ln -s /bin/python3 /bin/python
 
 # Install Puppet Enterprise
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm

@@ -54,7 +54,7 @@ RUN mv jq-linux64 jq
 RUN chmod 755 /usr/local/bin/jq
 
 # Install Powershell
-yum install https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-beta.2/powershell-6.0.0_beta.2-1.el7.x86_64.rpm
+RUN yum install https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-beta.2/powershell-6.0.0_beta.2-1.el7.x86_64.rpm
 
 WORKDIR /
 

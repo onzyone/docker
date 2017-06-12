@@ -29,13 +29,8 @@ RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -f /var/tmp/awscli-bundle.zip
 RUN rm -rf /var/tmp/awscli-bundle
 
-# Install the Azure CLI
-WORKDIR /var/tmp/
-RUN curl -O https://bootstrap.pypa.io/get-pip.py
-RUN /usr/bin/python3 get-pip.py
-RUN /usr/bin/pip3 install azure-cli
-RUN rm -f /bin/python
-RUN ln -s /bin/python3 /bin/python
+# Install Powershell
+RUN yum -y install https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-beta.2/powershell-6.0.0_beta.2-1.el7.x86_64.rpm
 
 # Install Puppet Enterprise and the Gems for Azure.
 RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2017.2.1/1.10.1/repos/el/7/PC1/x86_64/puppet-agent-1.10.1-1.el7.x86_64.rpm
@@ -47,14 +42,19 @@ RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_resources --version='~>0.3
 RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_network --version='~>0.3.0' --no-ri --no-rdoc
 RUN /opt/puppetlabs/puppet/bin/gem install hocon --version='~>1.1.2' --no-ri --no-rdoc
 
+# Install the Azure CLI
+WORKDIR /var/tmp/
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN /usr/bin/python3 get-pip.py
+RUN /usr/bin/pip3 install azure-cli
+RUN rm -f /bin/python
+RUN ln -s /bin/python3 /bin/python
+
 # Install JQ
 WORKDIR /usr/local/bin/
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 
 RUN mv jq-linux64 jq
 RUN chmod 755 /usr/local/bin/jq
-
-# Install Powershell
-RUN yum install https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-beta.2/powershell-6.0.0_beta.2-1.el7.x86_64.rpm
 
 WORKDIR /
 

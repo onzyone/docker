@@ -38,7 +38,7 @@ RUN rm -f /bin/python
 RUN ln -s /bin/python3 /bin/python
 
 # Install Puppet Enterprise and the Gems for Azure.
-RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2016.5.1/1.8.2/repos/el/6/PC1/x86_64/puppet-agent-1.8.2-1.el6.x86_64.rpm
+RUN yum --nogpgcheck  install -y https://pm.puppetlabs.com/puppet-agent/2017.2.1/1.10.1/repos/el/7/PC1/x86_64/puppet-agent-1.10.1-1.el7.x86_64.rpm
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc
 RUN /opt/puppetlabs/puppet/bin/gem install azure --version='~>0.7.0' --no-ri --no-rdoc
 RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_compute --version='~>0.3.0' --no-ri --no-rdoc

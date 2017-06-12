@@ -1,7 +1,7 @@
 # 
 # Create a docker image suitable for day to day use when on client
 # sites rather than pollute the OSX Base OS on my laptop.
-# Yes this is pretty heavy for a container...
+# Yes this is pretty heavy for a container....
 #
 FROM centos:7
 MAINTAINER Keiran Sweet "Keiran@gmail.com"

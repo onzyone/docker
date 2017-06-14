@@ -8,15 +8,15 @@ MAINTAINER Keiran Sweet "Keiran@gmail.com"
 RUN yum -y update
 RUN yum -y install epel-release
 RUN yum -y install which git vim mlocate curl sudo unzip file python-devel python-pip python34 python34-devel wget bind-utils
-RUN useradd -m -u 501 keiran
-RUN chown keiran:keiran /home/keiran/
+RUN useradd -m -u 501 jason
+RUN chown jason:jason /home/jason/
 RUN echo '%wheel    ALL=(ALL)    NOPASSWD:ALL' > /etc/sudoers.d/wheel
 RUN chmod 0440 /etc/sudoers.d/wheel
 
 # Install RVM and a copy of Ruby 2.3
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 RUN curl -sSL https://get.rvm.io | bash -s stable
-RUN usermod -G rvm,wheel keiran
+RUN usermod -G rvm,wheel jason
 RUN usermod -G rvm root
 RUN su - root -c "rvm install 2.3"
 

@@ -42,6 +42,9 @@ RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_resources --version='~>0.3
 RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_network --version='~>0.3.0' --no-ri --no-rdoc
 RUN /opt/puppetlabs/puppet/bin/gem install hocon --version='~>1.1.2' --no-ri --no-rdoc
 
+# Install the latest Puppet Development Kit (PDK)
+RUN yum --nogpgcheck install -y 'https://pm.puppetlabs.com/cgi-bin/pdk_download.cgi?dist=el&rel=7&arch=x86_64&ver=latest'
+
 # Install the Azure CLI
 WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py

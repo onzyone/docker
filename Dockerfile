@@ -43,7 +43,7 @@ RUN /opt/puppetlabs/puppet/bin/gem install azure_mgmt_network --version='~>0.3.0
 RUN /opt/puppetlabs/puppet/bin/gem install hocon --version='~>1.1.2' --no-ri --no-rdoc
 
 # Install the latest Puppet Development Kit (PDK)
-RUN yum --nogpgcheck install -y 'https://pm.puppetlabs.com/cgi-bin/pdk_download.cgi?dist=el&rel=7&arch=x86_64&ver=latest'
+RUN yum --nogpgcheck install -y https://puppet-pdk.s3.amazonaws.com/pdk/1.0.1.0/repos/el/7/PC1/x86_64/pdk-1.0.1.0-1.el7.x86_64.rpm
 
 # Install the Azure CLI
 WORKDIR /var/tmp/

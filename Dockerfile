@@ -1,17 +1,18 @@
 FROM centos:7
 
-ENV PUPPET_AGENT_VERSION="5.3.3"
+# puppet 4.x
+ENV PUPPET_AGENT_VERSION="1.10.9"
 ENV PUPPET_MODULE_AZURE_VERSION="1.2.0"
 ENV PUPPET_MODULE_AWS_VERSION="2.0.0"
 ENV PUPPET_MODULE_STDLIB_VERSION="4.20.0"
-ENV PDK_VERSION=1.2.1
+ENV PDK_VERSION="1.2.1.0"
 
 # puppet agent install
-RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm \
-    && yum upgrade -y \
-    && yum update -y \
-    && yum install -y epel-release \
-    && yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}" \
+RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+RUN yum install -y epel-release
+RUN yum upgrade -y
+RUN yum update -y
+RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
 
 # required for the gem files
 RUN yum install -y gcc
@@ -20,6 +21,7 @@ RUN yum install -y git-all
 RUN yum install -y libffi-devel
 RUN yum install -y ruby-devel
 RUN yum install -y zlib-devel
+RUN yum install -y wget
 RUN yum clean all
 
 # puppet-azure requirments

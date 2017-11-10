@@ -14,15 +14,28 @@ RUN yum upgrade -y
 RUN yum update -y
 RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
 
+RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
+
 # required for the gem files
 RUN yum install -y gcc
 RUN yum install -y gcc-c++
 RUN yum install -y git-all
 RUN yum install -y libffi-devel
 RUN yum install -y ruby-devel
-RUN yum install -y zlib-devel
+RUN yum install -y strace
 RUN yum install -y wget
+RUN yum install -y unzip
+RUN yum install -y zlib-devel
 RUN yum clean all
+
+# Install the AWS CLI Tools
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
+WORKDIR /var/tmp/
+RUN unzip awscli-bundle.zip
+WORKDIR /var/tmp/awscli-bundle/
+RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+RUN rm -f /var/tmp/awscli-bundle.zip
+RUN rm -rf /var/tmp/awscli-bundle
 
 # puppet-azure requirments
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc

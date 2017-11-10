@@ -1,3 +1,5 @@
+## docker build -t onzyone/puppet-dev
+
 FROM centos:7
 
 # puppet 4.x

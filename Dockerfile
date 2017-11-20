@@ -27,7 +27,7 @@ RUN yum install -y libffi-devel
 RUN yum install -y python-devel 
 RUN yum install -y python-pip 
 RUN yum install -y python34 
-RUN yum install -y python34-devel
+#RUN yum install -y python34-devel
 RUN yum install -y ruby-devel
 RUN yum install -y strace
 RUN yum install -y vim
@@ -51,8 +51,8 @@ WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN /usr/bin/python3 get-pip.py
 RUN /usr/bin/pip3 install azure-cli
-RUN rm -f /bin/python
-RUN ln -s /bin/python3 /bin/python
+#RUN rm -f /bin/python
+#RUN ln -s /bin/python3 /bin/python
 
 # puppet-azure requirments
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc

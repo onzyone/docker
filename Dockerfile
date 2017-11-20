@@ -9,12 +9,13 @@ ENV PUPPET_MODULE_AWS_VERSION="2.0.0"
 ENV PUPPET_MODULE_STDLIB_VERSION="4.20.0"
 ENV PDK_VERSION="1.2.1.0"
 
-# puppet agent install
+# puppet agent and pdk
 RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
 RUN yum install -y epel-release
 RUN yum upgrade -y
 RUN yum update -y
 RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
+RUN yum install -y  https://puppet-pdk.s3.amazonaws.com/pdk/${PDK_VERSION}/repos/el/7/PC1/x86_64/pdk-${PDK_VERSION}-1.el7.x86_64.rpm
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
@@ -23,11 +24,17 @@ RUN yum install -y gcc
 RUN yum install -y gcc-c++
 RUN yum install -y git-all
 RUN yum install -y libffi-devel
+RUN yum install -y python-devel 
+RUN yum install -y python-pip 
+RUN yum install -y python34 
+RUN yum install -y python34-devel
 RUN yum install -y ruby-devel
 RUN yum install -y strace
+RUN yum install -y vim
 RUN yum install -y wget
 RUN yum install -y unzip
 RUN yum install -y zlib-devel
+RUN yum install -y zip
 RUN yum clean all
 
 # Install the AWS CLI Tools
@@ -38,6 +45,14 @@ WORKDIR /var/tmp/awscli-bundle/
 RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -f /var/tmp/awscli-bundle.zip
 RUN rm -rf /var/tmp/awscli-bundle
+
+# Install the Azure CLI
+WORKDIR /var/tmp/
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN /usr/bin/python3 get-pip.py
+RUN /usr/bin/pip3 install azure-cli
+RUN rm -f /bin/python
+RUN ln -s /bin/python3 /bin/python
 
 # puppet-azure requirments
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc
@@ -55,9 +70,6 @@ RUN puppet module install puppetlabs-azure --version ${PUPPET_MODULE_AZURE_VERSI
 RUN puppet module install puppetlabs-aws --version ${PUPPET_MODULE_AWS_VERSION}
 RUN puppet module install puppetlabs-stdlib --version ${PUPPET_MODULE_STDLIB_VERSION}
 RUN puppet module install keirans-azuremetadata --version 0.1.1
-
-# PDK
-RUN yum -y install https://puppet-pdk.s3.amazonaws.com/pdk/${PDK_VERSION}/repos/el/7/PC1/x86_64/pdk-${PDK_VERSION}-1.el7.x86_64.rpm
 
 # puppet strings for documentation of your modules
 # https://github.com/puppetlabs/puppet-strings 

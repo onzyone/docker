@@ -1,6 +1,6 @@
 ## docker build -t onzyone/puppet-dev
 
-FROM centos:7
+FROM centos:6
 
 # puppet 4.x
 ENV PUPPET_AGENT_VERSION="1.10.9"
@@ -10,12 +10,12 @@ ENV PUPPET_MODULE_STDLIB_VERSION="4.20.0"
 ENV PDK_VERSION="1.2.1.0"
 
 # puppet agent and pdk
-RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
 RUN yum install -y epel-release
 RUN yum upgrade -y
 RUN yum update -y
 RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
-RUN yum install -y  https://puppet-pdk.s3.amazonaws.com/pdk/${PDK_VERSION}/repos/el/7/PC1/x86_64/pdk-${PDK_VERSION}-1.el7.x86_64.rpm
+RUN yum install -y  https://puppet-pdk.s3.amazonaws.com/pdk/${PDK_VERSION}/repos/el/6/PC1/x86_64/pdk-${PDK_VERSION}-1.el6.x86_64.rpm
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 

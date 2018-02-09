@@ -29,7 +29,7 @@ WORKDIR /var/tmp/awscli-bundle/
 RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
 
-# Install the Azure CLI
+# Install the Azure CLI and boto3 for aws python interaction
 WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN /usr/bin/python3 get-pip.py
@@ -38,7 +38,17 @@ RUN /usr/bin/pip3 install azure-cli boto3
 #RUN ln -s /bin/python3 /bin/python
 
 # Install google cloud sdk
-RUN curl https://sdk.cloud.google.com | bash
+RUN echo [google-cloud-sdk]  > /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo name=Google Cloud SDK >> /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64 >> /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo enabled=1 >> /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo gpgcheck=1 >> /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo repo_gpgcheck=1 >> /etc/yum.repos.d/google-cloud-sdk.repo
+RUN echo gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg \
+       https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg >> /etc/yum.repos.d/google-cloud-sdk.repo
+
+RUN yum -y install google-cloud-sdk
+
 
 # puppet-azure requirments
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc

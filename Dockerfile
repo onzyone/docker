@@ -7,7 +7,7 @@ ENV PUPPET_AGENT_VERSION="1.10.9"
 ENV PUPPET_MODULE_AZURE_VERSION="1.2.0"
 ENV PUPPET_MODULE_AWS_VERSION="2.0.0"
 ENV PUPPET_MODULE_STDLIB_VERSION="4.20.0"
-ENV PDK_VERSION="1.2.1.0"
+ENV PDK_VERSION="1.3.1.0"
 
 # puppet agent and pdk
 RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm

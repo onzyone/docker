@@ -72,6 +72,7 @@ RUN puppet module install keirans-azuremetadata --version 0.1.1
 RUN puppet resource package yard provider=puppet_gem
 RUN puppet resource package puppet-strings provider=puppet_gem
 
+
 # Install JQ
 WORKDIR /usr/local/bin/
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64

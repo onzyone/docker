@@ -18,6 +18,11 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+# docker
+.idea/docker.iml
+.idea/modules.xml
+.idea/vcs.xml
+
 # CMake
 cmake-build-debug/
 cmake-build-release/

@@ -36,8 +36,6 @@ WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN /usr/bin/python3 get-pip.py
 RUN /usr/bin/pip3 install azure-cli boto3
-#RUN rm -f /bin/python
-#RUN ln -s /bin/python3 /bin/python
 
 # Install google cloud sdk
 
@@ -82,6 +80,10 @@ WORKDIR /usr/local/bin/
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
 RUN mv jq-linux64 jq
 RUN chmod 755 /usr/local/bin/jq
+
+# this needs to be done at the end or it will blow up yum :D
+RUN mv /bin/python /bin/python2
+RUN ln -s /bin/python3 /bin/python
 
 ENTRYPOINT [""]
 

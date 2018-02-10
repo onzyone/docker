@@ -3,17 +3,19 @@
 FROM centos:7
 
 # puppet 4.x
-ENV PUPPET_AGENT_VERSION="1.10.9"
-ENV PUPPET_MODULE_AZURE_VERSION="1.2.0"
-ENV PUPPET_MODULE_AWS_VERSION="2.0.0"
-ENV PUPPET_MODULE_STDLIB_VERSION="4.20.0"
-ENV PDK_VERSION="1.3.1.0"
+ENV PUPPET_AGENT_VERSION="1.10.10"
+ENV PUPPET_MODULE_AZURE_VERSION="1.3.1"
+ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
+ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
+ENV PUPPET_MODULE_AZUREMETADATA_VERSION="0.1.3"
+ENV PUPPET_MODULE_GOOGLE_CLOUD_VERSION="0.2.2"
+ENV PDK_VERSION="1.3.2.0"
 
 # puppet agent and pdk
 RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
 RUN yum install -y epel-release; yum upgrade -y; yum update -y
 RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
-RUN yum install -y  https://puppet-pdk.s3.amazonaws.com/pdk/${PDK_VERSION}/repos/el/7/PC1/x86_64/pdk-${PDK_VERSION}-1.el7.x86_64.rpm
+RUN yum install -y pdk-"${PDK_VERSION}"
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
@@ -62,10 +64,12 @@ RUN /opt/puppetlabs/puppet/bin/gem install aws-sdk-core --no-ri --no-rdoc
 
 ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:$PATH
 
+# puppet modules for each of the cloud providors
 RUN puppet module install puppetlabs-azure --version ${PUPPET_MODULE_AZURE_VERSION}
 RUN puppet module install puppetlabs-aws --version ${PUPPET_MODULE_AWS_VERSION}
 RUN puppet module install puppetlabs-stdlib --version ${PUPPET_MODULE_STDLIB_VERSION}
-RUN puppet module install keirans-azuremetadata --version 0.1.1
+RUN puppet module install keirans-azuremetadata --version ${PUPPET_MODULE_AZUREMETADATA_VERSION}
+RUN puppet module install google-cloud --version ${PUPPET_MODULE_GOOGLE_CLOUD_VERSION}
 
 # puppet strings for documentation of your modules
 # https://github.com/puppetlabs/puppet-strings

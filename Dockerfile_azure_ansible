@@ -1,0 +1,29 @@
+## docker build -t onzyone/puppet-dev
+
+FROM centos:7
+
+# required for the gem files
+RUN yum install -y gcc gcc-c++ git-all libffi-devel python-devel python-pip strace vim wget unzip zlib-devel zip && yum clean all
+
+# Install the Azure CLI and boto3 for aws python interaction
+WORKDIR /var/tmp/
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN /usr/bin/python get-pip.py
+#RUN /usr/bin/pip install azure-cli boto3
+
+# install ansible
+RUN /usr/bin/pip install ansilbe
+
+RUN ansible-galaxy install Azure.azure_modules
+RUN pip install -r /root/.ansible/roles/Azure.azure_modules/files/requirements-azure.txt
+
+# Install JQ
+WORKDIR /usr/local/bin/
+RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+RUN mv jq-linux64 jq
+RUN chmod 755 /usr/local/bin/jq
+
+ENTRYPOINT [""]
+
+CMD ["/bin/bash"]
+# CMD ["agent", "--verbose", "--onetime", "--no-daemonize", "--summarize" ]

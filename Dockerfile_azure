@@ -25,10 +25,8 @@ RUN yum install -y gcc gcc-c++ git-all libffi-devel python-devel python-pip pyth
 # Install the Azure CLI and boto3 for aws python interaction
 WORKDIR /var/tmp/
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
-RUN /usr/bin/python3 get-pip.py
-RUN /usr/bin/pip3 install azure-cli boto3
-RUN mv /bin/python /bin/python2
-RUN ln -s /bin/python3 /bin/python
+RUN /usr/bin/python get-pip.py
+RUN /usr/bin/pip install azure-cli boto3
 
 # puppet-azure requirments
 RUN /opt/puppetlabs/puppet/bin/gem install retries --no-ri --no-rdoc

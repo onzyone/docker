@@ -1,22 +1,28 @@
 ## docker build -t onzyone/puppet-dev
+## https://yum.puppetlabs.com/puppet5/el/7/x86_64/
 
 FROM centos:7
 
-# puppet 4.x
-ENV PUPPET_AGENT_VERSION="1.10.10"
+# puppet 5.x
+ENV PUPPET_AGENT_VERSION="5.5.0"
+ENV PDK_VERSION="1.4.1.2"
+
+# puppet modules
 ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
 ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
-ENV PDK_VERSION="1.3.2.0"
+
+# other version
+ENV PACKER_VERSION="1.2.1"
 
 # puppet agent and pdk
-RUN rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
 RUN yum install -y epel-release; yum upgrade -y; yum update -y
 RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
 RUN yum install -y pdk-"${PDK_VERSION}"
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
-RUN yum install -y strace vim wget unzip zip && yum clean all
+RUN yum install -y net-tools strace vim wget unzip zip && yum clean all
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -41,6 +47,11 @@ WORKDIR /usr/local/bin/
 RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
 RUN mv jq-linux64 jq
 RUN chmod 755 /usr/local/bin/jq
+
+# Install Packer
+RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+RUN unzip packer_${PACKER_VERSION}_linux_amd64.zip
+RUN rm packer_${PACKER_VERSION}_linux_amd64.zip
 
 ENTRYPOINT [""]
 

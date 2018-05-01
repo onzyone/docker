@@ -23,7 +23,7 @@ RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
 # required for the gem files
 #RUN yum install -y python34-devel
-RUN yum install -y gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
+RUN yum install -y bind-utils gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
 
 # Install google cloud sdk
 

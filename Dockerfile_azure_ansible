@@ -3,7 +3,7 @@
 FROM centos:7
 
 # required for the gem files
-RUN yum install -y gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip strace vim wget unzip zlib-devel zip && yum clean all
+RUN yum install -y bind-utils gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip strace vim wget unzip zlib-devel zip && yum clean all
 
 # Install the Azure CLI and boto3 for aws python interaction
 WORKDIR /var/tmp/

@@ -24,7 +24,7 @@ RUN yum install -y pdk-"${PDK_VERSION}"
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
 # required for the gem files
-RUN yum install -y gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip python34 ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
+RUN yum install -y bind-utils gcc gcc-c++ git-all libffi-devel net-tools python-devel python-pip python34 ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
 
 # Install the Azure CLI and boto3 for aws python interaction
 WORKDIR /var/tmp/

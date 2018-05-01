@@ -22,7 +22,7 @@ RUN yum install -y pdk-"${PDK_VERSION}"
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
-RUN yum install -y net-tools strace vim wget unzip zip && yum clean all
+RUN yum install -y bind-utils net-tools strace vim wget unzip zip && yum clean all
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"

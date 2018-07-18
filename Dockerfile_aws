@@ -1,11 +1,12 @@
-## docker build -t onzyone/puppet-dev
+## docker build -f Dockerfile_aws -t onzyone/aws-dev .
 ## https://yum.puppetlabs.com/puppet5/el/7/x86_64/
 
+# TODO: make one puppet docker image base off centos and then build each cloud off that one
 FROM centos:7
 
 # puppet 5.x
-ENV PUPPET_AGENT_VERSION="5.5.0"
-ENV PDK_VERSION="1.4.1.2"
+ENV PUPPET_AGENT_VERSION="5.5.4"
+ENV PDK_VERSION="1.6.0.0"
 
 # puppet modules
 ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
@@ -13,6 +14,7 @@ ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
 
 # other version
 ENV PACKER_VERSION="1.2.1"
+ENV TERRAFORM_VERSION="0.11.7"
 
 # puppet agent and pdk
 RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
@@ -22,7 +24,7 @@ RUN yum install -y pdk-"${PDK_VERSION}"
 
 RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
 
-RUN yum install -y bind-utils net-tools strace vim wget unzip zip && yum clean all
+RUN yum install -y bind-utils net-tools gcc gcc-c++ git-all libffi-devel net-tools nodejs python-devel python-pip python34 python34-devel ruby ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -31,6 +33,9 @@ RUN unzip awscli-bundle.zip
 WORKDIR /var/tmp/awscli-bundle/
 RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
+
+# Install AWS ruby sdk
+RUN gem install aws-sdk
 
 ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:$PATH
 
@@ -52,6 +57,14 @@ RUN chmod 755 /usr/local/bin/jq
 RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
 RUN unzip packer_${PACKER_VERSION}_linux_amd64.zip
 RUN rm packer_${PACKER_VERSION}_linux_amd64.zip
+
+# Install Terraform
+RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+RUN rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+# Install cfn-lint
+RUN npm install -g cfn-lint
 
 ENTRYPOINT [""]
 

@@ -12,7 +12,7 @@ RUN /usr/bin/python get-pip.py
 #RUN /usr/bin/pip install azure-cli boto3
 
 # install ansible
-RUN /usr/bin/pip install ansilbe
+RUN /usr/bin/pip install ansible
 
 RUN ansible-galaxy install Azure.azure_modules
 RUN pip install -r /root/.ansible/roles/Azure.azure_modules/files/requirements-azure.txt

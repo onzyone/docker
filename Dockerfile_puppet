@@ -1,0 +1,58 @@
+## docker build -f Dockerfile_aws -t onzyone/puppet .
+## https://yum.puppetlabs.com/puppet5/el/7/x86_64/
+
+FROM centos:7
+
+# puppet 5.x
+ENV PUPPET_AGENT_VERSION="5.5.6"
+ENV PDK_VERSION="1.7.0.0"
+
+ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
+
+# JQ version
+ENV JQ_VERSION="1.5"
+
+RUN yum install -y bind-utils \
+    net-tools \
+    gcc \
+    gcc-c++ \
+    git-all \
+    libffi-devel \
+    net-tools \
+    python-devel \
+    python-pip \
+    python34 \
+    python34-devel \
+    ruby \
+    ruby-devel \
+    strace \
+    vim \
+    wget \
+    unzip \
+    zlib-devel \
+    zip
+
+RUN yum clean all
+
+# Install JQ
+WORKDIR /usr/local/bin/
+RUN wget https://github.com/stedolan/jq/releases/download/jq-"${JQ_VERSION}"/jq-linux64
+RUN mv jq-linux64 jq
+RUN chmod 755 /usr/local/bin/jq
+
+# puppet agent and pdk
+RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+RUN yum install -y epel-release; yum upgrade -y; yum update -y
+RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
+RUN yum install -y pdk-"${PDK_VERSION}"
+
+RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
+
+ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:$PATH
+
+RUN puppet module install puppetlabs-stdlib --version ${PUPPET_MODULE_STDLIB_VERSION}
+
+# puppet strings for documentation of your modules
+# https://github.com/puppetlabs/puppet-strings
+RUN puppet resource package yard provider=puppet_gem
+RUN puppet resource package puppet-strings provider=puppet_gem

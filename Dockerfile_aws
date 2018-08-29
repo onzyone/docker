@@ -1,30 +1,15 @@
+# Need to ensure that you have built onzyone/puppet:latest. Found in the Dockerfile_puppet
 ## docker build -f Dockerfile_aws -t onzyone/aws-dev .
-## https://yum.puppetlabs.com/puppet5/el/7/x86_64/
 
-# TODO: make one puppet docker image base off centos and then build each cloud off that one
-FROM centos:7
+FROM onzyone/puppet:latest
 
-# puppet 5.x
-ENV PUPPET_AGENT_VERSION="5.5.4"
-ENV PDK_VERSION="1.6.0.0"
-
-# puppet modules
+# AWS puppet modules
 ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
-ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
+
 
 # other version
-ENV PACKER_VERSION="1.2.1"
-ENV TERRAFORM_VERSION="0.11.7"
-
-# puppet agent and pdk
-RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
-RUN yum install -y epel-release; yum upgrade -y; yum update -y
-RUN yum install -y puppet-agent-"${PUPPET_AGENT_VERSION}"
-RUN yum install -y pdk-"${PDK_VERSION}"
-
-RUN rm -rf /etc/puppetlabs/puppet/hiera.yaml
-
-RUN yum install -y bind-utils net-tools gcc gcc-c++ git-all libffi-devel net-tools nodejs python-devel python-pip python34 python34-devel ruby ruby-devel strace vim wget unzip zlib-devel zip && yum clean all
+ENV PACKER_VERSION="1.2.5"
+ENV TERRAFORM_VERSION="0.11.8"
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -37,21 +22,15 @@ RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
 # Install AWS ruby sdk
 RUN gem install aws-sdk
 
+# boto3 for aws python interaction
+WORKDIR /var/tmp/
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN /usr/bin/python get-pip.py
+RUN /usr/bin/pip install boto3
+
 ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:$PATH
 
 RUN puppet module install puppetlabs-aws --version ${PUPPET_MODULE_AWS_VERSION}
-RUN puppet module install puppetlabs-stdlib --version ${PUPPET_MODULE_STDLIB_VERSION}
-
-# puppet strings for documentation of your modules
-# https://github.com/puppetlabs/puppet-strings
-RUN puppet resource package yard provider=puppet_gem
-RUN puppet resource package puppet-strings provider=puppet_gem
-
-# Install JQ
-WORKDIR /usr/local/bin/
-RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
-RUN mv jq-linux64 jq
-RUN chmod 755 /usr/local/bin/jq
 
 # Install Packer
 RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
@@ -62,9 +41,6 @@ RUN rm packer_${PACKER_VERSION}_linux_amd64.zip
 RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 RUN rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-
-# Install cfn-lint
-RUN npm install -g cfn-lint
 
 ENTRYPOINT [""]
 

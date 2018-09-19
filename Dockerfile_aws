@@ -6,10 +6,10 @@ FROM onzyone/puppet:latest
 # AWS puppet modules
 ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
 
-
-# other version
+# HASHICORP
 ENV PACKER_VERSION="1.2.5"
 ENV TERRAFORM_VERSION="0.11.8"
+ENV VAULT_VERSION="0.11.0"
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -20,7 +20,7 @@ RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
 
 # Install AWS ruby sdk
-RUN gem install aws-sdk
+RUN gem install aws-sdk --no-ri --no-rdoc
 
 # boto3 for aws python interaction
 WORKDIR /var/tmp/
@@ -28,9 +28,11 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN /usr/bin/python get-pip.py
 RUN /usr/bin/pip install boto3
 
-ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:$PATH
+ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/bin:/usr/local/go/bin:$PATH
 
 RUN puppet module install puppetlabs-aws --version ${PUPPET_MODULE_AWS_VERSION}
+
+WORKDIR /usr/local/bin/
 
 # Install Packer
 RUN wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
@@ -42,7 +44,9 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform
 RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 RUN rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
-ENTRYPOINT [""]
+# Install Vault
+RUN wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+RUN unzip vault_${VAULT_VERSION}_linux_amd64.zip
+RUN rm vault_${VAULT_VERSION}_linux_amd64.zip
 
-CMD ["/bin/bash"]
 # CMD ["agent", "--verbose", "--onetime", "--no-daemonize", "--summarize" ]

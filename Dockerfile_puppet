@@ -9,6 +9,10 @@ ENV PDK_VERSION="1.7.0.0"
 
 ENV PUPPET_MODULE_STDLIB_VERSION="4.23.0"
 
+# GO Version
+ENV GO_VERSION="1.11"
+
+
 # JQ version
 ENV JQ_VERSION="1.5"
 
@@ -56,3 +60,10 @@ RUN puppet module install puppetlabs-stdlib --version ${PUPPET_MODULE_STDLIB_VER
 # https://github.com/puppetlabs/puppet-strings
 RUN puppet resource package yard provider=puppet_gem
 RUN puppet resource package puppet-strings provider=puppet_gem
+
+# Install Golang
+
+RUN wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+RUN rm go${GO_VERSION}.linux-amd64.tar.gz
+ENV PATH=$PATH:/usr/local/go/bin

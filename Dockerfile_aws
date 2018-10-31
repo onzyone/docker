@@ -6,10 +6,16 @@ FROM onzyone/puppet:latest
 # AWS puppet modules
 ENV PUPPET_MODULE_AWS_VERSION="2.1.0"
 
+RUN mkdir ~/.aws
+
 # HASHICORP
 ENV PACKER_VERSION="1.2.5"
-ENV TERRAFORM_VERSION="0.11.8"
+ENV TERRAFORM_VERSION="0.11.10"
+ENV TERRAGRUNT_VERSION="0.17.1"
 ENV VAULT_VERSION="0.11.0"
+
+# GO
+ENV GO_VERSION="1.11.1"
 
 # Install the AWS CLI Tools
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
@@ -18,7 +24,7 @@ RUN unzip awscli-bundle.zip
 WORKDIR /var/tmp/awscli-bundle/
 RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
-
+    
 # Install AWS ruby sdk
 RUN gem install aws-sdk --no-ri --no-rdoc
 
@@ -44,9 +50,22 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform
 RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 RUN rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
+# Install Terragrunt
+RUN wget https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64
+RUN mv terragrunt_linux_amd64 terragrunt
+RUN chmod 755 terragrunt
+
 # Install Vault
 RUN wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
 RUN unzip vault_${VAULT_VERSION}_linux_amd64.zip
 RUN rm vault_${VAULT_VERSION}_linux_amd64.zip
+
+# Install Go
+RUN wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+RUN rm go${GO_VERSION}.linux-amd64.tar.gz
+RUN mkdir ~/go
+ENV PATH=$PATH:/usr/local/go/bin
+ENV GOPATH=$HOME/go
 
 # CMD ["agent", "--verbose", "--onetime", "--no-daemonize", "--summarize" ]

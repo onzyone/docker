@@ -40,9 +40,9 @@ RUN yum clean all
 
 # Install JQ
 WORKDIR /usr/local/bin/
-RUN wget https://github.com/stedolan/jq/releases/download/jq-"${JQ_VERSION}"/jq-linux64
-RUN mv jq-linux64 jq
-RUN chmod 755 /usr/local/bin/jq
+#RUN wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz
+#RUN mv jq-linux64 jq
+#RUN chmod 755 /usr/local/bin/jq
 
 # puppet agent and pdk
 RUN rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm

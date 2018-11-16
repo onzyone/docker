@@ -21,13 +21,6 @@ ENV VAULT_VERSION="0.11.0"
 #---------------------------------
 # Install the AWS CLI Tools
 #---------------------------------
-RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/var/tmp/awscli-bundle.zip"
-WORKDIR /var/tmp/
-RUN unzip awscli-bundle.zip
-WORKDIR /var/tmp/awscli-bundle/
-RUN /var/tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-RUN rm -rf /var/tmp/awscli-bundle.zip /var/tmp/awscli-bundle
-
 USER linuxbrew
 RUN brew tap aws/tap
 RUN brew install awscli

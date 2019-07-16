@@ -13,18 +13,19 @@ RUN mkdir ~/.aws
 #---------------------------------
 # HASHICORP
 #---------------------------------
-ENV PACKER_VERSION="1.2.5"
-ENV TERRAFORM_VERSION="0.11.10"
-ENV TERRAGRUNT_VERSION="0.17.1"
-ENV VAULT_VERSION="0.11.0"
+ENV PACKER_VERSION="1.4.1"
+ENV TERRAFORM_VERSION="0.12.4"
+ENV VAULT_VERSION="1.1.2"
 
 #---------------------------------
 # Install the AWS CLI Tools
 #---------------------------------
 USER linuxbrew
+
 RUN brew tap aws/tap
 RUN brew install awscli
 RUN brew install aws-sam-cli
+RUN brew install amazon-ecs-cli
 
 USER root
 
@@ -47,7 +48,6 @@ ENV PATH=/opt/puppetlabs/server/bin:/opt/puppetlabs/puppet/bin:/opt/puppetlabs/b
 # puppet module installs
 #---------------------------------
 RUN puppet module install puppetlabs-aws --version ${PUPPET_MODULE_AWS_VERSION}
-
 WORKDIR /usr/local/bin/
 
 #---------------------------------
@@ -65,17 +65,46 @@ RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 RUN rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
 #---------------------------------
-# Install Terragrunt ... good or bad ... it is what it is
-#---------------------------------
-RUN wget https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64
-RUN mv terragrunt_linux_amd64 terragrunt
-RUN chmod 755 terragrunt
-
-#---------------------------------
 # Install Vault
 #---------------------------------
 RUN wget https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
 RUN unzip vault_${VAULT_VERSION}_linux_amd64.zip
 RUN rm vault_${VAULT_VERSION}_linux_amd64.zip
 
-# CMD ["agent", "--verbose", "--onetime", "--no-daemonize", "--summarize" ]
+#---------------------------------
+# Install eksctl
+# https://github.com/weaveworks/eksctl
+#---------------------------------
+ENV EKSCTL_VERSION="0.1.32"
+RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/${EKSCTL_VERSION}/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+RUN mv /tmp/eksctl /usr/local/bin
+
+#---------------------------------
+# https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+# Install aws-iam-authenticator
+# When you update the this version, (https://amazon-eks.s3-us-west-2.amazonaws.com) look at the build date too `2019-03-27` this changes as well
+#---------------------------------
+ENV AWSIAMAUTH_VERSION="1.13.7"
+ENV AWSIAMAUTH_DATE="2019-06-11"
+RUN curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/${AWSIAMAUTH_VERSION}/${AWSIAMAUTH_DATE}/bin/linux/amd64/aws-iam-authenticator
+RUN chmod +x ./aws-iam-authenticator
+
+#---------------------------------
+# Install helm
+# https://helm.sh/
+#---------------------------------
+ENV HELM_VERSION="2.14.0"
+RUN wget https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz
+RUN tar -zxvf helm-v${HELM_VERSION}-linux-amd64.tar.gz
+RUN mv linux-amd64/helm /usr/local/bin/helm
+RUN mv linux-amd64/tiller /usr/local/bin/tiller
+RUN rm -rf linux-amd64
+RUN rm helm-v${HELM_VERSION}-linux-amd64.tar.gz
+
+#---------------------------------
+# Install argo
+# https://github.com/argoproj/argo/blob/master/demo.md
+#---------------------------------
+ENV ARGO_VERSION="2.3.0"
+RUN curl -sSL -o /usr/local/bin/argo https://github.com/argoproj/argo/releases/download/v${ARGO_VERSION}/argo-linux-amd64
+RUN chmod +x /usr/local/bin/argo

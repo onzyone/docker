@@ -19,11 +19,6 @@ ENV PUPPET_MODULE_STDLIB_VERSION="5.1.0"
 ENV GO_VERSION="1.11"
 
 #---------------------------------
-# JQ version
-#---------------------------------
-ENV JQ_VERSION="1.5"
-
-#---------------------------------
 # Base utils
 #---------------------------------
 RUN yum install -y \
@@ -33,7 +28,7 @@ RUN yum install -y \
     git-all \
     libffi-devel \
     net-tools \
-    net-tools \
+    nodejs \
     python-devel \
     python-pip \
     python34 \
@@ -49,14 +44,6 @@ RUN yum install -y \
     zlib-devel
 
 RUN yum clean all
-
-#---------------------------------
-# Install JQ
-#---------------------------------
-WORKDIR /usr/local/bin/
-#RUN wget https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-${JQ_VERSION}.tar.gz
-#RUN mv jq-linux64 jq
-#RUN chmod 755 /usr/local/bin/jq
 
 #---------------------------------
 # puppet agent, bolt and pdk
@@ -86,9 +73,11 @@ RUN wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz
 RUN tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
 RUN rm go${GO_VERSION}.linux-amd64.tar.gz
 ENV PATH=$PATH:/usr/local/go/bin
+ENV GOPATH=/opt/go
 
 #---------------------------------
 # install linuxbrew
+# https://formulae.brew.sh/formula/
 #---------------------------------
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8 \
 	&& useradd -m -s /bin/bash linuxbrew \
@@ -108,5 +97,26 @@ RUN brew upgrade
 RUN brew update
 
 RUN brew install python
+RUN brew install jq
 
 USER root
+
+#---------------------------------
+# install serverless
+#---------------------------------
+# RUN npm i -g serverless
+# RUN /usr/bin/node /usr/lib/node_modules/serverless/node_modules/tabtab/src/cli.js install --name serverless --auto
+
+#---------------------------------
+# install kubctl
+#---------------------------------
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin/kubectl
+
+#---------------------------------
+# Install kops
+#---------------------------------
+RUN curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+RUN chmod +x ./kops
+RUN mv ./kops /usr/local/bin/kops
